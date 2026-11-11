@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Zarvique Dashboard</title><link rel="stylesheet" href="assets/site.css">
+<style>
+.dashboard{padding:48px 0}.dash-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px;align-items:start}.dash-panel{background:#fff;border:1px solid var(--line);padding:24px}.dash-panel h2{font:26px Georgia,serif;color:var(--forest);margin:0 0 12px}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:700}.field input,.field textarea{padding:11px;border:1px solid var(--line);font:inherit;width:100%}.wide{grid-column:1/-1}.status{padding:13px;background:#f4f5ef;border-left:3px solid var(--gold);font-size:13px;margin:14px 0}.role-tag{display:inline-block;padding:5px 9px;background:#f3eee4;color:#80663c;font-size:11px;font-weight:800;border-radius:3px}.dash-links{display:grid;gap:9px;margin-top:18px}.dash-links a{padding:12px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:700}.dash-links a:hover{border-color:var(--gold)}.btn{cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}
+@media(max-width:760px){.dash-grid{grid-template-columns:1fr}.profile-fields{grid-template-columns:1fr}.wide{grid-column:auto}}
+</style></head><body>
+<div class="top"><div class="wrap">Pakistan-first · Built for global connections</div></div>
+<header class="head"><div class="wrap nav"><a class="brand" href="index.html">ZARVIQUE<small>THE COMPLETE REAL ESTATE BUSINESS NETWORK</small></a><nav class="navlinks"><a href="properties.html">Properties</a><a href="agents.html">Agents</a><a href="investments.html">Investments</a><a href="construction.html">Construction</a><a href="companies.html">Companies</a><a href="tools.html">Project Tools</a></nav><button class="btn dark" id="signOut" type="button">Sign out</button></div></header>
+<main><section class="hero"><div class="wrap"><div class="eyebrow">Member workspace</div><h1>My Zarvique dashboard</h1><p>Manage your account details and the information connected to your role.</p></div></section>
+<section class="dashboard"><div class="wrap dash-grid">
+<aside class="dash-panel"><span class="eyebrow">Your membership</span><h2 id="welcome">Welcome</h2><div id="roleBadge" class="role-tag">Loading role…</div><p id="accountEmail" class="lead"></p><div class="status" id="accountStatus" role="status" aria-live="polite">Loading your secure profile…</div><div class="dash-links"><a href="properties.html">⌂ Browse property marketplace</a><a href="add-property.html">＋ Submit a property</a><a href="my-listings.html">▤ Manage my property listings</a><a href="saved-properties.html">♡ Saved properties</a><a href="agents.html">♧ Explore agents</a><a href="investments.html">◈ Investment network</a><a href="construction.html">⌁ Construction network</a><a href="companies.html">▦ Companies & partners</a></div></aside>
+<section class="dash-panel"><span class="eyebrow">Profile settings</span><h2>Complete your member profile</h2><p class="lead">Only you can view and edit this profile at this stage. Public professional profiles and verification will be introduced separately.</p>
+<form id="profileForm"><div class="profile-fields">
+<div class="field"><label for="fullName">Full name *</label><input id="fullName" required maxlength="100"></div>
+<div class="field"><label for="phone">Phone / WhatsApp</label><input id="phone" maxlength="25"></div>
+<div class="field"><label for="country">Country</label><input id="country" maxlength="80"></div>
+<div class="field"><label for="city">City</label><input id="city" maxlength="80"></div>
+<div class="field wide"><label for="businessName">Business / Agency name</label><input id="businessName" maxlength="120"></div>
+<div id="roleFields" class="profile-fields wide"></div>
+<div class="field wide"><label for="bio">About you / your business</label><textarea id="bio" rows="4" maxlength="700" placeholder="A short introduction (optional)"></textarea></div>
+</div><button class="btn dark" id="saveProfile" type="submit" style="margin-top:18px">Save profile</button></form>
+</section></div></section></main>
+<footer class="foot"><div class="wrap">ZARVIQUE · Your role, your network, your opportunities.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const db=supabase.createClient("https://zmzhxtwxwktnlkcyxzom.supabase.co","sb_publishable_joXZuP5TyZOCO-qL4nl9Kw_Jyh0bST0");const $=id=>document.getElementById(id);let session=null,profile=null;
+const roles={owner_seller:"Property Owner / Seller",buyer_renter:"Buyer / Renter",agent_dealer:"Dealer / Agent",investor:"Investor",builder_contractor:"Builder / Contractor",architect_engineer:"Architect / Engineer",company_firm:"Company / Firm",supplier_service:"Supplier / Service Provider"};
+const roleFields={
+owner_seller:[["property_type_interest","Property type / development interest"],["property_location","Property location / area"]],
+buyer_renter:[["preferred_property","Property you are looking for"],["budget_range","Approximate budget (PKR)"]],
+agent_dealer:[["agency_name","Agency / office name"],["service_areas","Areas you serve"],["experience","Years of experience"]],
+investor:[["investment_range","Investment range (PKR)"],["investment_focus","Investment interests"]],
+builder_contractor:[["business_name","Construction company / business"],["service_types","Construction services"],["project_scale","Typical project scale"]],
+architect_engineer:[["specialization","Specialization"],["registration_number","Professional registration (optional)"],["portfolio_url","Portfolio website (optional)"]],
+company_firm:[["company_name","Company / firm name"],["registration_number","Company registration (optional)"],["service_categories","Services offered"]],
+supplier_service:[["product_categories","Products / services offered"],["delivery_areas","Cities / areas served"],["business_name","Business name (optional)"]]
+};
+function setStatus(s){$("accountStatus").textContent=s}
+function makeRoleFields(type,values={}){const host=$("roleFields");host.innerHTML="";(roleFields[type]||[]).forEach(([key,label])=>{const box=document.createElement("div");box.className="field";const lab=document.createElement("label");lab.htmlFor="detail_"+key;lab.textContent=label;const input=document.createElement("input");input.id="detail_"+key;input.name=key;input.maxLength=key.includes("url")?200:160;input.value=values[key]||"";input.placeholder=label;box.append(lab,input);host.append(box)})}
+function readRoleFields(){const out={};$("roleFields").querySelectorAll("input").forEach(i=>{if(i.value.trim())out[i.name]=i.value.trim()});return out}
+async function init(){const {data,error}=await db.auth.getSession();if(error)throw error;session=data.session;if(!session){location.href="auth.html?next=dashboard.html";return}
+$("accountEmail").textContent=session.user.email||"";const meta=session.user.user_metadata||{};const params=new URLSearchParams(location.search);const role=params.get("role");const validRole=roles[role]?role:(roles[meta.account_type]?meta.account_type:"buyer_renter");
+const {data:row,error:readError}=await db.from("profiles").select("*").eq("id",session.user.id).maybeSingle();
+if(readError)throw readError;
+if(row){profile=row;if(role&&roles[role]&&row.account_type==="buyer_renter"&&!meta.account_type){const {data:updated,error:updateError}=await db.from("profiles").update({account_type:role}).eq("id",session.user.id).select().single();if(updateError)throw updateError;profile=updated}}
+else{const {data:created,error:createError}=await db.from("profiles").insert({id:session.user.id,full_name:meta.full_name||session.user.email||"",phone:meta.phone||"",country:meta.country||"Pakistan",city:meta.city||"",account_type:validRole,business_name:meta.business_name||null,profile_details:meta.profile_details||{}}).select().single();if(createError)throw createError;profile=created}
+const type=profile.account_type;$("welcome").textContent="Welcome, "+(profile.full_name||"member");$("roleBadge").textContent=roles[type]||"Zarvique member";$("fullName").value=profile.full_name||"";$("phone").value=profile.phone||"";$("country").value=profile.country||"";$("city").value=profile.city||"";$("businessName").value=profile.business_name||"";makeRoleFields(type,profile.profile_details||{});$("bio").value=(profile.profile_details||{}).bio||"";setStatus("Your profile is private and saved securely. Complete any optional role details, then save your changes.") }
+$("profileForm").addEventListener("submit",async e=>{e.preventDefault();if(!profile)return;const b=$("saveProfile");b.disabled=true;setStatus("Saving your profile…");try{const details=readRoleFields();const bio=$("bio").value.trim();if(bio)details.bio=bio;const {data,error}=await db.from("profiles").update({full_name:$("fullName").value.trim(),phone:$("phone").value.trim(),country:$("country").value.trim(),city:$("city").value.trim(),business_name:$("businessName").value.trim()||null,profile_details:details}).eq("id",session.user.id).select().single();if(error)throw error;profile=data;$("welcome").textContent="Welcome, "+(profile.full_name||"member");setStatus("Profile saved successfully.")}catch(err){setStatus("Could not save profile: "+(err.message||"Please try again."))}finally{b.disabled=false}});
+$("signOut").addEventListener("click",async()=>{const {error}=await db.auth.signOut();if(error){setStatus(error.message);return}location.href="index.html"});
+init().catch(err=>setStatus("Profile setup issue: "+(err.message||"Please sign in again. If the profiles migration has not been run in Supabase, run it first.")));
+</script></body></html>
