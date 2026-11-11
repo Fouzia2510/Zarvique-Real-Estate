@@ -32,7 +32,7 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id);
 let session=null, busy=false;
 function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
-function money(value){const n=Number(value||0);if(n>=10000000)return "PKR "+(n/10000000).toFixed(2).replace(/\\.?0+$/,"")+" Crore";if(n>=100000)return "PKR "+(n/100000).toFixed(2).replace(/\\.?0+$/,"")+" Lac";return "PKR "+n.toLocaleString("en-PK")}
+function money(value){const n=Number(value||0);if(n>=10000000)return "PKR "+(n/10000000).toFixed(2).replace(/\.?0+$/,"")+" Crore";if(n>=100000)return "PKR "+(n/100000).toFixed(2).replace(/\.?0+$/,"")+" Lac";return "PKR "+n.toLocaleString("en-PK")}
 function setNotice(message){$("notice").textContent=message}
 function isAdmin(user){return user?.app_metadata?.role==="admin"}
 async function loadPending(){
