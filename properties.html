@@ -24,6 +24,7 @@
 <div class="eyebrow" data-en="Phase 1 · Property marketplace" data-ur="پہلا مرحلہ · پراپرٹی مارکیٹ پلیس">Phase 1 · Property marketplace</div>
 <h2 data-en="Explore properties across Pakistan." data-ur="پاکستان بھر میں پراپرٹیز تلاش کریں۔">Explore properties across Pakistan.</h2>
 <p class="lead" data-en="Browse sample homes, plots and commercial spaces. These example listings are for preview only and have not been independently verified." data-ur="گھروں، پلاٹس اور کمرشل جگہوں کی نمونہ لسٹنگز دیکھیں۔ یہ صرف پیش نظارہ ہیں اور ان کی آزادانہ تصدیق نہیں ہوئی۔">Browse sample homes, plots and commercial spaces. These example listings are for preview only and have not been independently verified.</p>
+<div class="phase2-actions"><a class="btn dark" href="add-property.html">+ Add a property</a><a class="btn ghost" href="my-listings.html">My listings</a><a class="btn ghost" href="saved-properties.html">Saved properties</a><a class="btn ghost" href="compare-properties.html">Compare properties</a></div>
 <div class="market-toolbar">
 <input id="propertyQuery" placeholder="Search by title or area" data-en-placeholder="Search by title or area" data-ur-placeholder="نام یا علاقے سے تلاش کریں">
 <select id="propertyPurpose"><option value="all" data-en="Buy or rent" data-ur="خریدیں یا کرایہ">Buy or rent</option><option value="sale" data-en="For sale" data-ur="فروخت کے لیے">For sale</option><option value="rent" data-en="For rent" data-ur="کرائے کے لیے">For rent</option></select>
@@ -33,7 +34,7 @@
 <div id="listingCount" class="listing-city" aria-live="polite">Showing 8 sample listings</div>
 <div class="listing-grid" id="listingGrid" style="margin-top:14px"></div>
 
-<div class="phase2-actions"><button class="btn dark" id="showAddProperty" type="button" data-en="+ Add a property" data-ur="+ پراپرٹی شامل کریں">+ Add a property</button><span id="accountStatus" class="phase2-note">Sign in to submit a property. New submissions are reviewed before publication.</span></div>
+<div class="phase2-actions"><button class="btn dark" id="showAddProperty" type="button" data-en="+ Add a property" data-ur="+ پراپرٹی شامل کریں">+ Add a property</button><a class="btn ghost" href="my-listings.html">My listings</a><a class="btn ghost" href="saved-properties.html">Saved</a><a class="btn ghost" href="compare-properties.html">Compare</a><span id="accountStatus" class="phase2-note">Sign in to submit a property. New submissions are reviewed before publication.</span></div>
 <section class="add-panel hidden" id="addPropertyPanel"><h3 data-en="Add a property" data-ur="پراپرٹی شامل کریں">Add a property</h3><p class="lead" data-en="Enter the property information below. Your listing will be saved to Zarvique for review. Photo uploads will be added in a later step." data-ur="نیچے پراپرٹی کی معلومات درج کریں۔ اس نمونے میں تصاویر سرور پر اپ لوڈ یا لسٹنگز مستقل محفوظ نہیں ہوتیں۔">Enter the property information below. This prototype does not upload photos to a server or save listings permanently.</p>
 <form id="addPropertyForm"><div class="add-grid">
 <div class="field"><label for="newTitle" data-en="Property title" data-ur="پراپرٹی کا عنوان">Property title</label><input id="newTitle" required maxlength="90" placeholder="e.g. 10 Marla Family House"></div>
