@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Project Enquiries · Zarvique</title><link rel="stylesheet" href="assets/site.css">
+<style>
+.page{padding:48px 0 64px}.panel{background:#fff;border:1px solid var(--line);padding:24px;margin-bottom:16px}.panel h2{font:25px Georgia,serif;color:var(--forest);margin:0 0 10px}.muted{color:var(--muted)}.enquiry{border:1px solid var(--line);padding:18px;margin-top:14px;background:#fff}.enquiry h3{font:21px Georgia,serif;color:var(--forest);margin:0 0 8px}.meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.pill{display:inline-block;background:#f2eee5;color:#80663c;padding:4px 9px;border-radius:3px;font-size:11px;font-weight:800}.empty{padding:24px;background:#f6f5f0;border-left:3px solid var(--gold);margin-top:16px}.error{color:#8a3028}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:600px){.panel{padding:18px}}
+</style></head>
+<body>
+<div class="top"><div class="wrap">Pakistan-first · Built for global connections</div></div>
+<header class="head"><div class="wrap nav"><a class="brand" href="index.html">ZARVIQUE<small>THE COMPLETE REAL ESTATE BUSINESS NETWORK</small></a><nav class="navlinks"><a href="properties.html">Properties</a><a href="construction.html">Construction</a><a href="project-development.html">Project Development</a><a href="dashboard.html">Dashboard</a></nav><a class="btn dark" href="dashboard.html">Back to dashboard</a></div></header>
+<main>
+<section class="hero"><div class="wrap"><div class="eyebrow">Member workspace · Project development</div><h1>My project enquiries</h1><p>View the project enquiries you have submitted from your Zarvique account. Your records are private to you.</p></div></section>
+<section class="page"><div class="wrap">
+<div class="panel"><h2>Your submitted enquiries</h2><p class="muted" id="intro" role="status" aria-live="polite">Checking your secure account…</p><div id="enquiries"></div><div class="actions"><a class="btn" href="project-enquiry.html">＋ Submit another enquiry</a><a class="btn ghost" href="dashboard.html">Dashboard</a></div></div>
+<div class="notice">Status meanings: Submitted means received; Reviewing means under review; Closed means no further action is planned. Professional matching and introductions are not active yet.</div>
+</div></section>
+</main>
+<footer class="foot"><div class="wrap">ZARVIQUE · Connecting property, people, capital and expertise.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const db=supabase.createClient("https://zmzhxtwxwktnlkcyxzom.supabase.co","sb_publishable_joXZuP5TyZOCO-qL4nl9Kw_Jyh0bST0");
+const intro=document.getElementById("intro"),host=document.getElementById("enquiries");
+const typeNames={new_build:"New construction / build",renovation:"Renovation / extension",commercial:"Commercial project",residential_development:"Residential development",other:"Other"};
+const statusNames={submitted:"Submitted",reviewing:"Reviewing",closed:"Closed"};
+function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
+async function load(){
+ const {data:{session},error:authError}=await db.auth.getSession();
+ if(authError)throw authError;
+ if(!session){location.href="auth.html?next=my-project-enquiries.html";return}
+ const {data,error}=await db.from("project_enquiries").select("id,project_name,project_type,city,area,property_status,plot_size,budget_range,timeline,professionals_needed,description,status,created_at").order("created_at",{ascending:false});
+ if(error)throw error;
+ intro.textContent="Signed in as "+(session.user.email||"your Zarvique account")+". "+data.length+" enquiry/enquiries found.";
+ if(!data.length){host.append(el("div","empty","You have not submitted any project enquiries yet. Use “Submit another enquiry” to get started."));return}
+ data.forEach(item=>{
+  const card=el("article","enquiry");card.append(el("h3",null,item.project_name));
+  const meta=el("div","meta");meta.append(el("span",null,(typeNames[item.project_type]||item.project_type)+" · "+item.city+(item.area?", "+item.area:"")));
+  meta.append(el("span","pill",statusNames[item.status]||item.status));meta.append(el("span",null,"Submitted "+new Date(item.created_at).toLocaleDateString()));
+  card.append(meta);
+  const facts=[];
+  if(item.plot_size)facts.push("Size: "+item.plot_size);
+  if(item.budget_range)facts.push("Budget: PKR "+item.budget_range);
+  if(item.timeline)facts.push("Timeline: "+item.timeline.replaceAll("_"," "));
+  if(facts.length)card.append(el("p","muted",facts.join(" · ")));
+  if(item.professionals_needed&&item.professionals_needed.length)card.append(el("p","muted","Professionals: "+item.professionals_needed.join(", ")));
+  if(item.description)card.append(el("p","muted",item.description));
+  host.append(card);
+ });
+}
+load().catch(err=>{intro.textContent="Could not load your enquiries: "+(err.message||"Please try again.");intro.className="error"});
+</script></body></html>
