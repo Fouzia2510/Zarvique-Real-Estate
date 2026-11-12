@@ -38,6 +38,7 @@
 
 
 /* Zarvique AI assistant */
+.wa-launch{position:fixed;left:22px;bottom:22px;z-index:1000;background:#168c55;color:#fff;border:0;border-radius:999px;padding:14px 19px;font-weight:800;box-shadow:0 10px 30px #10282035;cursor:pointer;display:inline-flex;align-items:center;gap:8px}.wa-launch:hover{background:#107346}
 .ai-launch{position:fixed;right:22px;bottom:22px;z-index:1000;border:0;border-radius:999px;background:var(--gold);color:#fff;padding:14px 19px;font-weight:800;box-shadow:0 10px 30px #10282035;cursor:pointer}
 .ai-panel{position:fixed;right:22px;bottom:84px;z-index:1001;width:min(380px,calc(100vw - 28px));height:min(560px,calc(100vh - 120px));background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 65px #10282035;display:none;overflow:hidden;grid-template-rows:auto 1fr auto}
 .ai-panel.open{display:grid}
@@ -55,7 +56,7 @@
 .ai-compose button{border:0;background:var(--forest);color:#fff;border-radius:22px;padding:0 16px;font-weight:700;cursor:pointer}
 .ai-compose button:disabled{opacity:.55;cursor:wait}
 .ai-note{font-size:10px;color:var(--muted);padding:0 13px 9px;background:#fff}
-@media(max-width:560px){.ai-launch{right:14px;bottom:14px}.ai-panel{right:14px;bottom:76px}}
+@media(max-width:560px){.ai-launch{right:14px;bottom:14px}.wa-launch{left:14px;bottom:14px;padding:12px 14px;font-size:12px}.ai-panel{right:14px;bottom:76px}}
 
 </style>
 </head>
@@ -109,6 +110,7 @@
   </div>
 </div>
 <button class="ai-launch" id="zarviqueAiLaunch" type="button" aria-expanded="false">✦ Ask Zarvique AI</button>
+<a class="wa-launch" href="https://wa.me/923034253277?text=Assalam-o-alaikum%2C%20I%20am%20contacting%20Zarvique%20from%20your%20website.%20Please%20guide%20me." target="_blank" rel="noopener noreferrer" aria-label="Chat with Zarvique on WhatsApp">☏ WhatsApp Business</a>
 
 <script>
 let lang='en',selectedRole='Property owner';
