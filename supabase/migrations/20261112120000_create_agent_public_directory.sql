@@ -20,7 +20,7 @@ create index if not exists agent_public_profiles_published_city_idx
   on public.agent_public_profiles(is_published, city);
 
 alter table public.agent_public_profiles enable row level security;
-grant select, insert, update on public.agent_public_profiles to anon, authenticated;
+grant select on public.agent_public_profiles to anon, authenticated;
 grant insert, update on public.agent_public_profiles to authenticated;
 
 drop policy if exists "Anyone can view published agent profiles" on public.agent_public_profiles;
