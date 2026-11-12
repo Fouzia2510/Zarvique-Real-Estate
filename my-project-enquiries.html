@@ -23,7 +23,10 @@
 const db=supabase.createClient("https://zmzhxtwxwktnlkcyxzom.supabase.co","sb_publishable_joXZuP5TyZOCO-qL4nl9Kw_Jyh0bST0");
 const intro=document.getElementById("intro"),host=document.getElementById("enquiries");
 const typeNames={new_build:"New construction / build",renovation:"Renovation / extension",commercial:"Commercial project",residential_development:"Residential development",other:"Other"};
-const statusNames={submitted:"Submitted",reviewing:"Reviewing",closed:"Closed"};\nconst professionalNames={builder_contractor:"Builder / contractor",architect:"Architect",engineer:"Engineer",interior_designer:"Interior designer",material_supplier:"Material supplier",not_sure:"Not sure yet"};\nconst propertyStatusNames={owned:"I own the property",under_purchase:"Purchase is in progress",looking_for_property:"I am looking for a property",other:"Other / not decided"};\nconst timelineNames={within_3_months:"Within 3 months", "3_to_6_months":"3–6 months","6_to_12_months":"6–12 months",planning_only:"Planning / exploring only"};
+const statusNames={submitted:"Submitted",reviewing:"Reviewing",closed:"Closed"};
+const professionalNames={builder_contractor:"Builder / contractor",architect:"Architect",engineer:"Engineer",interior_designer:"Interior designer",material_supplier:"Material supplier",not_sure:"Not sure yet"};
+const propertyStatusNames={owned:"I own the property",under_purchase:"Purchase is in progress",looking_for_property:"I am looking for a property",other:"Other / not decided"};
+const timelineNames={within_3_months:"Within 3 months", "3_to_6_months":"3–6 months","6_to_12_months":"6–12 months",planning_only:"Planning / exploring only"};
 function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
 async function load(){
  const {data:{session},error:authError}=await db.auth.getSession();
@@ -41,10 +44,11 @@ async function load(){
   const facts=[];
   if(item.plot_size)facts.push("Size: "+item.plot_size);
   if(item.budget_range)facts.push("Budget: PKR "+item.budget_range);
-  if(item.timeline)facts.push("Timeline: "+item.timeline.replaceAll("_"," "));
-  if(facts.length)card.append(el("p","muted",facts.join(" · ")));
-  if(item.professionals_needed&&item.professionals_needed.length)card.append(el("p","muted","Professionals: "+item.professionals_needed.join(", ")));
-  if(item.description)card.append(el("p","muted",item.description));
+  if(item.timeline)facts.push("Timeline: "+(timelineNames[item.timeline]||item.timeline));
+  if(item.property_status)facts.push("Property: "+(propertyStatusNames[item.property_status]||item.property_status));
+  if(facts.length)card.append(el("p","detail-line",facts.join(" · ")));
+  if(item.professionals_needed&&item.professionals_needed.length){const names=item.professionals_needed.map(key=>professionalNames[key]||key.replaceAll("_"," "));card.append(el("p","detail-line","Professionals needed: "+names.join(", ")));}
+  if(item.description)card.append(el("p","detail-line",item.description));
   host.append(card);
  });
 }
