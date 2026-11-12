@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My Project Enquiries · Zarvique</title><link rel="stylesheet" href="assets/site.css">
 <style>
-.page{padding:48px 0 64px}.panel{background:#fff;border:1px solid var(--line);padding:24px;margin-bottom:16px}.panel h2{font:25px Georgia,serif;color:var(--forest);margin:0 0 10px}.muted{color:var(--muted)}.enquiry{border:1px solid var(--line);padding:18px;margin-top:14px;background:#fff}.enquiry h3{font:21px Georgia,serif;color:var(--forest);margin:0 0 8px}.meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.pill{display:inline-block;background:#f2eee5;color:#80663c;padding:4px 9px;border-radius:3px;font-size:11px;font-weight:800}.empty{padding:24px;background:#f6f5f0;border-left:3px solid var(--gold);margin-top:16px}.error{color:#8a3028}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.page{padding:48px 0 64px}.panel{background:#fff;border:1px solid var(--line);padding:24px;margin-bottom:16px}.panel h2{font:25px Georgia,serif;color:var(--forest);margin:0 0 10px}.muted{color:var(--muted)}.enquiry{border:1px solid var(--line);padding:18px;margin-top:14px;background:#fff}.enquiry h3{font:21px Georgia,serif;color:var(--forest);margin:0 0 8px}.meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.pill{display:inline-block;background:#f2eee5;color:#80663c;padding:4px 9px;border-radius:3px;font-size:11px;font-weight:800}.pill.submitted{background:#edf2ee;color:#315b43}.pill.reviewing{background:#fff3d9;color:#795b20}.pill.closed{background:#eeeeee;color:#555}.detail-label{font-weight:700;color:var(--forest)}.detail-line{font-size:13px;margin:10px 0 0;color:var(--muted)}.empty{padding:24px;background:#f6f5f0;border-left:3px solid var(--gold);margin-top:16px}.error{color:#8a3028}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 @media(max-width:600px){.panel{padding:18px}}
 </style></head>
 <body>
@@ -23,7 +23,7 @@
 const db=supabase.createClient("https://zmzhxtwxwktnlkcyxzom.supabase.co","sb_publishable_joXZuP5TyZOCO-qL4nl9Kw_Jyh0bST0");
 const intro=document.getElementById("intro"),host=document.getElementById("enquiries");
 const typeNames={new_build:"New construction / build",renovation:"Renovation / extension",commercial:"Commercial project",residential_development:"Residential development",other:"Other"};
-const statusNames={submitted:"Submitted",reviewing:"Reviewing",closed:"Closed"};
+const statusNames={submitted:"Submitted",reviewing:"Reviewing",closed:"Closed"};\nconst professionalNames={builder_contractor:"Builder / contractor",architect:"Architect",engineer:"Engineer",interior_designer:"Interior designer",material_supplier:"Material supplier",not_sure:"Not sure yet"};\nconst propertyStatusNames={owned:"I own the property",under_purchase:"Purchase is in progress",looking_for_property:"I am looking for a property",other:"Other / not decided"};\nconst timelineNames={within_3_months:"Within 3 months", "3_to_6_months":"3–6 months","6_to_12_months":"6–12 months",planning_only:"Planning / exploring only"};
 function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
 async function load(){
  const {data:{session},error:authError}=await db.auth.getSession();
@@ -36,7 +36,7 @@ async function load(){
  data.forEach(item=>{
   const card=el("article","enquiry");card.append(el("h3",null,item.project_name));
   const meta=el("div","meta");meta.append(el("span",null,(typeNames[item.project_type]||item.project_type)+" · "+item.city+(item.area?", "+item.area:"")));
-  meta.append(el("span","pill",statusNames[item.status]||item.status));meta.append(el("span",null,"Submitted "+new Date(item.created_at).toLocaleDateString()));
+  meta.append(el("span","pill "+(item.status||"submitted"),statusNames[item.status]||item.status));meta.append(el("span",null,"Submitted "+new Date(item.created_at).toLocaleDateString()));
   card.append(meta);
   const facts=[];
   if(item.plot_size)facts.push("Size: "+item.plot_size);
