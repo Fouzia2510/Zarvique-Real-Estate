@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Start a Project Enquiry | Zarvique</title><link rel="stylesheet" href="assets/site.css">
+<style>
+.form-shell{max-width:900px;margin:auto;background:#fff;padding:28px;border:1px solid var(--line)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:5px}.field label,.group-label{font-size:12px;font-weight:700}.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid var(--line);font:inherit;background:#fff}.wide{grid-column:1/-1}.choices{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}.choices label{font-size:13px;display:flex;align-items:center;gap:6px}.msg{padding:13px;background:#f4f5ef;border-left:3px solid var(--gold);margin-top:16px;font-size:13px}.hint{font-size:12px;color:var(--muted)}button:disabled{opacity:.6;cursor:wait}@media(max-width:620px){.form-grid{grid-template-columns:1fr}.wide{grid-column:auto}.form-shell{padding:18px}}
+</style></head><body>
+<div class="top"><div class="wrap">Pakistan-first · Built for global connections</div></div>
+<header class="head"><div class="wrap nav"><a class="brand" href="index.html">ZARVIQUE<small>THE COMPLETE REAL ESTATE BUSINESS NETWORK</small></a><nav class="navlinks"><a href="properties.html">Properties</a><a href="construction.html">Construction</a><a href="project-development.html">Project Development</a><a href="dashboard.html">Dashboard</a></nav><a class="btn dark" href="auth.html">Account</a></div></header>
+<main><section class="hero"><div class="wrap"><div class="eyebrow">Project development · Enquiry</div><h1>Tell us about your project</h1><p>Share the basics of your planned build, renovation or development. Your enquiry is saved privately to your Zarvique account for future review.</p></div></section>
+<section class="section"><div class="wrap"><div class="form-shell">
+<form id="projectForm"><div class="form-grid">
+<div class="field wide"><label for="projectName">Project name / short title *</label><input id="projectName" required maxlength="120" placeholder="e.g. 1 kanal house construction in Lahore"></div>
+<div class="field"><label for="projectType">Project type *</label><select id="projectType" required><option value="">Choose project type</option><option value="new_build">New construction / build</option><option value="renovation">Renovation / extension</option><option value="commercial">Commercial project</option><option value="residential_development">Residential development</option><option value="other">Other</option></select></div>
+<div class="field"><label for="city">City *</label><input id="city" required maxlength="80" placeholder="Lahore"></div>
+<div class="field"><label for="area">Area / locality</label><input id="area" maxlength="120" placeholder="DHA Phase 6"></div>
+<div class="field"><label for="propertyStatus">Property status *</label><select id="propertyStatus" required><option value="">Choose status</option><option value="owned">I own the property</option><option value="under_purchase">Purchase is in progress</option><option value="looking_for_property">I am looking for a property</option><option value="other">Other / not decided</option></select></div>
+<div class="field"><label for="plotSize">Plot / property size</label><input id="plotSize" maxlength="60" placeholder="e.g. 10 Marla"></div>
+<div class="field"><label for="budget">Estimated budget (PKR)</label><input id="budget" maxlength="80" placeholder="e.g. 2–3 crore"></div>
+<div class="field"><label for="timeline">Expected timeline *</label><select id="timeline" required><option value="">Choose timeline</option><option value="within_3_months">Within 3 months</option><option value="3_to_6_months">3–6 months</option><option value="6_to_12_months">6–12 months</option><option value="planning_only">Planning / exploring only</option></select></div>
+<div class="field"><label for="phone">Phone / WhatsApp</label><input id="phone" type="tel" maxlength="30" placeholder="+92..."></div>
+<div class="field wide"><span class="group-label">Which professionals may you need?</span><div class="choices">
+<label><input type="checkbox" name="professionals" value="builder_contractor"> Builder / contractor</label>
+<label><input type="checkbox" name="professionals" value="architect"> Architect</label>
+<label><input type="checkbox" name="professionals" value="engineer"> Engineer</label>
+<label><input type="checkbox" name="professionals" value="interior_designer"> Interior designer</label>
+<label><input type="checkbox" name="professionals" value="supplier"> Material supplier</label>
+<label><input type="checkbox" name="professionals" value="not_sure"> Not sure yet</label>
+</div></div>
+<div class="field wide"><label for="description">Project details / requirements</label><textarea id="description" rows="5" maxlength="1500" placeholder="Describe what you want to build, renovate or develop. Please do not include passwords or sensitive documents."></textarea></div>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px"><button class="btn dark" id="submitBtn" type="submit">Submit project enquiry</button><a class="btn ghost" href="project-development.html">Back</a></div></form>
+<div id="message" class="msg" role="status" aria-live="polite">Sign in to submit a project enquiry. Your enquiry will be private to your account.</div>
+<p class="hint">This form records your project information only. Project matching, professional introductions and verification are not active yet.</p>
+</div></div></section></main>
+<footer class="foot"><div class="wrap">ZARVIQUE · Connecting property, people, capital and expertise.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const db=supabase.createClient("https://zmzhxtwxwktnlkcyxzom.supabase.co","sb_publishable_joXZuP5TyZOCO-qL4nl9Kw_Jyh0bST0");const $=id=>document.getElementById(id);let session=null;const say=t=>$("message").textContent=t;
+(async()=>{const {data,error}=await db.auth.getSession();if(error)throw error;session=data.session;if(!session){say("Please sign in first. Redirecting to account access…");setTimeout(()=>location.href="auth.html?next=project-enquiry.html",900);return}say("Signed in as "+(session.user.email||"your Zarvique account")+". You can submit your project details below.")})().catch(err=>say("Unable to check sign-in status: "+(err.message||"Please refresh.")));
+$("projectForm").addEventListener("submit",async e=>{e.preventDefault();if(!session){say("Please sign in first.");return}const professionals=[...document.querySelectorAll('input[name="professionals"]:checked')].map(x=>x.value);const row={user_id:session.user.id,project_name:$("projectName").value.trim(),project_type:$("projectType").value,city:$("city").value.trim(),area:$("area").value.trim()||null,property_status:$("propertyStatus").value,plot_size:$("plotSize").value.trim()||null,budget_range:$("budget").value.trim()||null,timeline:$("timeline").value,professionals_needed:professionals,description:$("description").value.trim()||null,contact_phone:$("phone").value.trim()||null,status:"submitted"};const b=$("submitBtn");b.disabled=true;say("Submitting your project enquiry…");try{const {data,error}=await db.from("project_enquiries").insert(row).select("id").single();if(error)throw error;$("projectForm").reset();say("Your project enquiry has been submitted and saved privately to your Zarvique account. Reference: "+data.id+". Professional matching is not active yet.")}catch(err){say("Could not submit: "+(err.message||"Please try again. If the project_enquiries migration has not been run, run it in Supabase SQL Editor first."))}finally{b.disabled=false}});
+</script></body></html>
