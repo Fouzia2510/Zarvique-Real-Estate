@@ -36,6 +36,27 @@
 .detail-copy p{color:var(--muted);font-size:13px}.phase2-note{font-size:12px;color:var(--muted);background:#f5f6f2;padding:12px;border-left:3px solid var(--gold);margin:12px 0}
 @media(max-width:650px){.add-grid,.detail-layout{grid-template-columns:1fr}.add-grid .wide{grid-column:auto}}
 
+
+/* Zarvique AI assistant */
+.ai-launch{position:fixed;right:22px;bottom:22px;z-index:1000;border:0;border-radius:999px;background:var(--gold);color:#fff;padding:14px 19px;font-weight:800;box-shadow:0 10px 30px #10282035;cursor:pointer}
+.ai-panel{position:fixed;right:22px;bottom:84px;z-index:1001;width:min(380px,calc(100vw - 28px));height:min(560px,calc(100vh - 120px));background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 65px #10282035;display:none;overflow:hidden;grid-template-rows:auto 1fr auto}
+.ai-panel.open{display:grid}
+.ai-head{background:var(--forest);color:#fff;padding:15px 17px;display:flex;align-items:center;justify-content:space-between}
+.ai-head strong{display:block;font:20px Georgia,serif}.ai-head small{color:#d6dfd8;font-size:11px}
+.ai-close{background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer}
+.ai-messages{padding:15px;overflow:auto;background:#f8f8f5;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:88%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.ai-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);color:var(--ink);border-top-left-radius:3px}
+.ai-msg.user{align-self:flex-end;background:var(--forest);color:#fff;border-top-right-radius:3px}
+.ai-quick{display:flex;gap:6px;flex-wrap:wrap;padding:0 13px 10px;background:#fff}
+.ai-quick button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 9px;font-size:11px;color:var(--forest);cursor:pointer}
+.ai-compose{padding:11px;border-top:1px solid var(--line);display:flex;gap:8px;background:#fff}
+.ai-compose input{flex:1;min-width:0;border-radius:22px;padding:11px 13px}
+.ai-compose button{border:0;background:var(--forest);color:#fff;border-radius:22px;padding:0 16px;font-weight:700;cursor:pointer}
+.ai-compose button:disabled{opacity:.55;cursor:wait}
+.ai-note{font-size:10px;color:var(--muted);padding:0 13px 9px;background:#fff}
+@media(max-width:560px){.ai-launch{right:14px;bottom:14px}.ai-panel{right:14px;bottom:76px}}
+
 </style>
 </head>
 <body>
@@ -77,6 +98,18 @@
 </div></div></section><section class="cta"><div class="wrap"><div><div class="eyebrow" data-en="Built for collaboration" data-ur="تعاون کے لیے بنایا گیا">Built for collaboration</div><h2 style="font:34px Georgia,serif;color:var(--forest);margin:8px 0" data-en="One network. More ways to grow." data-ur="ایک نیٹ ورک، ترقی کے مزید مواقع۔">One network. More ways to grow.</h2></div><a class="btn dark" href="join.html" data-en="Become an early member" data-ur="ابتدائی ممبر بنیں">Become an early member</a></div></section>
 </main>
 <footer><div class="wrap foot"><div><a class="brand" style="color:#fff" href="#">ZARVIQUE<small>THE COMPLETE REAL ESTATE BUSINESS NETWORK</small></a><p data-en="Connecting property, people, capital and expertise. Starting in Pakistan, with a vision to grow globally." data-ur="پراپرٹی، افراد، سرمایہ اور مہارت کو جوڑنا۔ پاکستان سے آغاز، عالمی سطح پر ترقی کا وژن۔">Connecting property, people, capital and expertise. Starting in Pakistan, with a vision to grow globally.</p></div><div class="footlinks"><a href="properties.html">Properties</a><a href="agents.html">Agents</a><a href="investments.html">Investments</a><a href="construction.html">Construction</a><a href="companies.html">Companies</a><a href="tools.html">Project tools</a><a href="join.html">Join</a></div><small>© 2026 Zarvique · Prototype v0.1</small></div></footer>
+
+<div class="ai-panel" id="zarviqueAiPanel" role="dialog" aria-label="Zarvique AI assistant" aria-modal="false">
+  <div class="ai-head"><div><strong>Zarvique Assistant</strong><small>Property · Investment · Construction support</small></div><button class="ai-close" id="zarviqueAiClose" aria-label="Close chat">×</button></div>
+  <div class="ai-messages" id="zarviqueAiMessages" aria-live="polite"><div class="ai-msg bot">Assalam-o-alaikum! I’m Zarvique’s AI assistant. Ask me about buying, renting, selling, agents, investment or construction. You can write in English or Roman Urdu.</div></div>
+  <div>
+    <div class="ai-quick"><button type="button" data-ai-prompt="I want to buy a property in Lahore.">Buy property</button><button type="button" data-ai-prompt="I want to rent a property.">Rent property</button><button type="button" data-ai-prompt="I want to join as an agent.">Join as agent</button><button type="button" data-ai-prompt="I need construction services.">Construction</button></div>
+    <form class="ai-compose" id="zarviqueAiForm"><input id="zarviqueAiInput" maxlength="1200" autocomplete="off" placeholder="Type your question..." aria-label="Your message" required><button id="zarviqueAiSend" type="submit">Send</button></form>
+    <div class="ai-note">AI answers are guidance, not legal, financial or property verification advice.</div>
+  </div>
+</div>
+<button class="ai-launch" id="zarviqueAiLaunch" type="button" aria-expanded="false">✦ Ask Zarvique AI</button>
+
 <script>
 let lang='en',selectedRole='Property owner';
 const languageButton=document.getElementById('language');
@@ -86,4 +119,29 @@ const money=n=>'PKR '+Math.round(n).toLocaleString('en-PK');
 function calculate(){const land=Math.max(0,Number(document.getElementById('land').value)||0),build=Math.max(0,Number(document.getElementById('build').value)||0),other=Math.max(0,Number(document.getElementById('other').value)||0),sales=Math.max(0,Number(document.getElementById('sale').value)||0),total=land+build+other,profit=sales-total;document.getElementById('total').textContent=money(total);document.getElementById('profit').textContent=(profit<0?'−':'')+money(Math.abs(profit));document.getElementById('margin').textContent=sales?((profit/sales)*100).toFixed(1)+'% of expected sales':'Enter expected sales to calculate margin'}
 ['land','build','other','sale'].forEach(id=>document.getElementById(id).addEventListener('input',calculate));calculate();
 document.getElementById('searchBtn')?.addEventListener('click',()=>{const params=new URLSearchParams();const need=document.getElementById('need').value;const kind=document.getElementById('kind').value;const city=document.getElementById('city').value.trim();if(need==='rent')params.set('purpose','rent');if(need==='buy')params.set('purpose','sale');if(kind==='residential')params.set('type','House');if(kind==='commercial')params.set('type','Commercial');if(kind==='land')params.set('type','Plot');if(city)params.set('q',city);location.href='properties.html'+(params.toString()?'?'+params.toString():'')});</script>
+
+<script>
+(()=>{
+ const panel=document.getElementById('zarviqueAiPanel'),launch=document.getElementById('zarviqueAiLaunch'),close=document.getElementById('zarviqueAiClose');
+ const messages=document.getElementById('zarviqueAiMessages'),form=document.getElementById('zarviqueAiForm'),input=document.getElementById('zarviqueAiInput'),send=document.getElementById('zarviqueAiSend');
+ const history=[];
+ const open=()=>{panel.classList.add('open');launch.setAttribute('aria-expanded','true');input.focus()};
+ const shut=()=>{panel.classList.remove('open');launch.setAttribute('aria-expanded','false')};
+ launch.addEventListener('click',()=>panel.classList.contains('open')?shut():open());close.addEventListener('click',shut);
+ function add(text,who){const el=document.createElement('div');el.className='ai-msg '+who;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el}
+ async function ask(text){
+   add(text,'user');history.push({role:'user',content:text});input.value='';send.disabled=true;send.textContent='…';
+   const pending=add('Thinking…','bot');
+   try{
+     const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history.slice(-10)})});
+     const data=await response.json();if(!response.ok)throw new Error(data.error||'Assistant is temporarily unavailable.');
+     pending.textContent=data.reply||'Sorry, I could not prepare a reply.';history.push({role:'assistant',content:pending.textContent});
+   }catch(err){pending.textContent=err.message||'Connection problem. Please try again in a moment.'}
+   finally{send.disabled=false;send.textContent='Send';input.focus()}
+ }
+ form.addEventListener('submit',e=>{e.preventDefault();const text=input.value.trim();if(text&&!send.disabled)ask(text)});
+ document.querySelectorAll('[data-ai-prompt]').forEach(btn=>btn.addEventListener('click',()=>{open();ask(btn.getAttribute('data-ai-prompt'))}));
+})();
+</script>
+
 </body></html>
