@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Discover real estate dealers and agents on the Zarvique network."><title>Agent Directory | Zarvique</title><link rel="stylesheet" href="assets/site.css">
+<style>
+.directory-tools{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin:22px 0}.directory-tools input,.directory-tools select{padding:12px;border:1px solid var(--line);font:inherit;background:#fff}.agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.agent-card{background:#fff;border:1px solid var(--line);padding:20px;box-shadow:0 12px 32px #162d2410}.agent-card h3{font:22px Georgia,serif;color:var(--forest);margin:0 0 5px}.agent-card p{font-size:13px;color:var(--muted);line-height:1.65}.agent-meta{font-size:12px;color:var(--muted);margin:8px 0}.agent-tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.agent-tags span{font-size:10px;background:#f3f4ef;padding:5px 8px;border-radius:2px}.empty-state{grid-column:1/-1;padding:30px;text-align:center;border:1px dashed var(--line);color:var(--muted);background:#fff}
+@media(max-width:760px){.agent-grid{grid-template-columns:1fr 1fr}}@media(max-width:540px){.directory-tools,.agent-grid{grid-template-columns:1fr}}
+</style></head><body>
+<div class="top"><div class="wrap">Pakistan-first · Built for global connections</div></div>
+<header class="head"><div class="wrap nav"><a class="brand" href="index.html">ZARVIQUE<small>THE COMPLETE REAL ESTATE BUSINESS NETWORK</small></a><nav class="navlinks"><a href="index.html">Home</a><a href="properties.html">Properties</a><a href="agents.html">Agents</a><a href="investments.html">Investments</a><a href="construction.html">Construction</a><a href="companies.html">Companies</a><a href="tools.html">Project Tools</a></nav><a class="btn dark" href="my-agent-profile.html">Manage my profile</a></div></header>
+<main><section class="hero"><div class="wrap"><div class="eyebrow">Zarvique · Professional directory</div><h1>Find real estate agents and dealers.</h1><p>Explore professionals who have chosen to publish their Zarvique profile. Contact details appear only when an agent has chosen to share them.</p><div class="actions"><a class="btn" href="my-agent-profile.html">Publish your agent profile</a><a class="btn ghost" href="agents.html">Agent network overview</a></div></div></section>
+<section class="section"><div class="wrap"><div class="eyebrow">Public agent profiles</div><h2>Discover local expertise</h2><p class="lead">Search by agent name, agency, city or service area.</p>
+<div class="directory-tools"><input id="search" type="search" placeholder="Search name, agency or area"><select id="city"><option value="">All cities</option></select></div>
+<div id="count" class="listing-city" aria-live="polite">Loading published profiles…</div><div id="agents" class="agent-grid" style="margin-top:14px"></div>
+<div class="notice" style="margin-top:22px">Profiles are member-submitted and are not a guarantee of licensing, identity or service quality. Please conduct your own checks before engaging a professional.</div>
+</div></section></main>
+<footer class="foot"><div class="wrap">ZARVIQUE · Connecting property, people, capital and expertise.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const db=supabase.createClient("https://zmzhxtwxwktnlkcyxzom.supabase.co","sb_publishable_joXZuP5TyZOCO-qL4nl9Kw_Jyh0bST0");
+const $=id=>document.getElementById(id);let records=[];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function render(){
+ const q=$("search").value.trim().toLowerCase(),city=$("city").value;
+ const filtered=records.filter(a=>(!city||a.city===city)&&[a.display_name,a.agency_name,a.city,...(a.service_areas||[]),...(a.specialties||[])].join(" ").toLowerCase().includes(q));
+ $("count").textContent=filtered.length+" published agent profile(s)";
+ $("agents").innerHTML=filtered.length?filtered.map(a=>'<article class="agent-card"><h3>'+esc(a.display_name)+'</h3>'+(a.agency_name?'<strong>'+esc(a.agency_name)+'</strong>':'')+'<div class="agent-meta">'+esc(a.city)+(a.experience_years!==null?' · '+esc(a.experience_years)+' years experience':'')+'</div>'+(a.bio?'<p>'+esc(a.bio)+'</p>':'')+'<div class="agent-tags">'+(a.service_areas||[]).map(x=>'<span>'+esc(x)+'</span>').join("")+(a.specialties||[]).map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>'+(a.public_phone?'<a class="btn ghost" href="tel:'+esc(a.public_phone)+'">Call / WhatsApp: '+esc(a.public_phone)+'</a>':'<span class="agent-meta">Contact details not shared publicly</span>')+'</article>').join(""):'<div class="empty-state">No published profiles match your search yet. Agents can add themselves by choosing “Publish your agent profile”.</div>';
+}
+async function init(){
+ const {data,error}=await db.from("agent_public_profiles").select("display_name,agency_name,city,service_areas,specialties,experience_years,bio,public_phone").eq("is_published",true).order("city").limit(300);
+ if(error){$("count").textContent="Directory setup pending";$("agents").innerHTML='<div class="empty-state">The public directory database is not ready yet. Please try again after the administrator completes the setup.</div>';return}
+ records=data||[];const cities=[...new Set(records.map(a=>a.city).filter(Boolean))].sort();$("city").innerHTML='<option value="">All cities</option>'+cities.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join("");render();
+}
+$("search").addEventListener("input",render);$("city").addEventListener("change",render);init();
+</script></body></html>
